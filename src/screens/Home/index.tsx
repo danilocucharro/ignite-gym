@@ -19,9 +19,6 @@ export function Home() {
     "Remada curvada",
     "Remada unilateral",
     "levantamento terra",
-    "3",
-    "4",
-    "5"
   ])
   const [groupSelected, setGroupSelected] = useState("Costas")
 
@@ -51,9 +48,9 @@ export function Home() {
 
       <VStack px="$8" flex={1}>
         <HStack justifyContent="space-between" mb="$5" alignItems="center">
-          <Heading color="$gray200" fontSize="$md" fontFamily="$heading">
+          <Text color="$gray200" fontSize="$md" fontFamily="$heading">
             Exercícios
-          </Heading>
+          </Text>
 
           <Text color="$gray200" fontSize="$sm" fontFamily="$body">
             {exercisesList.length}

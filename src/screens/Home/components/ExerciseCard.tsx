@@ -23,9 +23,9 @@ export function ExerciseCard({ ...rest }: ExerciseCardProps) {
         />
 
         <VStack flex={1}>
-          <Heading fontSize="$lg" color="white" fontFamily="$heading">
+          <Text fontSize="$lg" color="white" fontFamily="$heading">
             Puxada frontal
-          </Heading>
+          </Text>
 
           <Text fontSize="$sm" color="$gray200" mt="$1" numberOfLines={2}>
             3 séries x 12 repetições

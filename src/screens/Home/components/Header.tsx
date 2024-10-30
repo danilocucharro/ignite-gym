@@ -15,7 +15,7 @@ export function Header() {
       />
       <VStack flex={1}>
         <Text color="$gray100" fontSize="$sm">Olá,</Text>
-        <Heading color="$gray100" fontSize="$md">Danilo Cucharro</Heading>
+        <Text color="$gray100" fontSize="$md" fontFamily="$heading">Danilo Cucharro</Text>
       </VStack>
 
       <Icon as={LogOut} color="$gray200" size="xl" /> 
