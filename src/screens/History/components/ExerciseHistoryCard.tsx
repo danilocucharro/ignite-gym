@@ -12,14 +12,15 @@ export function ExerciseHistoryCard() {
       alignItems="center"
       justifyContent="space-between"
     >
-      <VStack mr="$5" gap="$2">
+      <VStack mr="$5" gap="$2" flex={1}>
         <Text 
           color="$white" 
           fontSize="$md" 
           textTransform="capitalize" 
           fontFamily="$heading"
+          numberOfLines={1}
         >
-          Costas
+          Costassdnakjdnskanksndkajdsanksdnakjnsdkajsndkajndjajdnkjndkajnskd
         </Text>
 
         <Text color="$gray100" fontSize="$lg" numberOfLines={1}>
