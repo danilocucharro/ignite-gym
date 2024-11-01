@@ -89,12 +89,12 @@ export function SignUp() {
     >
       <VStack flex={1}>
         <Image
-        w="$full"
-        h={624}
-        position="absolute"
-        source={BackGroundImg}
-        defaultSource={BackGroundImg}
-        alt="Pessoas treinando"
+          w="$full"
+          h={624}
+          position="absolute"
+          source={BackGroundImg}
+          defaultSource={BackGroundImg}
+          alt="Pessoas treinando"
         />
 
         <VStack flex={1} px="$10" pb="$16">
