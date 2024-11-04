@@ -21,13 +21,13 @@ export function Home() {
   const [isLoading, setIsLoading] = useState(true)
   const [muscleGroupList, setMuscleGroupList] = useState<string[]>()
   const [exercisesList, setExercisesList] = useState<ExerciseDTO[]>([])
-  const [groupSelected, setGroupSelected] = useState("Costas")
+  const [groupSelected, setGroupSelected] = useState("antebraço")
   const toast = useToast()
 
   const navigation = useNavigation<AppNavigationRoutesProps>()
 
-  function handleOpenExerciseInfo() {
-    navigation.navigate("exercise")
+  function handleOpenExerciseInfo(exerciseId: string) { 
+    navigation.navigate("exercise", { exerciseId: exerciseId })
   }
 
   async function fetchGroups() {
@@ -131,7 +131,7 @@ export function Home() {
             renderItem={({ item }) => (
             <ExerciseCard 
               data={item} 
-              onPress={handleOpenExerciseInfo} 
+              onPress={() => handleOpenExerciseInfo(item.id)} 
             />
           )}
             showsVerticalScrollIndicator={false}

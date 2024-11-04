@@ -1,6 +1,12 @@
+import { HistoryDTO } from "@dtos/HistoryDTO";
+
 import { HStack, Text, VStack } from "@gluestack-ui/themed";
 
-export function ExerciseHistoryCard() {
+type ExerciseHistoryCardProps = {
+  data: HistoryDTO;
+}
+
+export function ExerciseHistoryCard({ data }: ExerciseHistoryCardProps ) {
   return(
     <HStack 
       w="$full" 
@@ -20,15 +26,15 @@ export function ExerciseHistoryCard() {
           fontFamily="$heading"
           numberOfLines={1}
         >
-          Costassdnakjdnskanksndkajdsanksdnakjnsdkajsndkajndjajdnkjndkajnskd
+          {data.group}
         </Text>
 
         <Text color="$gray100" fontSize="$lg" numberOfLines={1}>
-          Puxada frontal
+          {data.name}
         </Text>
       </VStack>
 
-      <Text color="$gray300" fontSize="$md">8:30</Text>
+      <Text color="$gray300" fontSize="$md">{data.hour}</Text>
     </HStack>
   )
 }
