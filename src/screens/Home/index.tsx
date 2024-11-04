@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useCallback, useEffect, useState } from "react";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { FlatList } from "react-native";
 
 import { Text, useToast, HStack, VStack } from "@gluestack-ui/themed";
@@ -14,14 +14,11 @@ import { AppError } from "@utils/AppError";
 
 import { api } from "@services/api";
 
+import { ExerciseDTO } from "@dtos/ExerciseDTO";
+
 export function Home() {
   const [muscleGroupList, setMuscleGroupList] = useState<string[]>()
-  const [exercisesList, setExercisesList] = useState([
-    "Puxada frontal",
-    "Remada curvada",
-    "Remada unilateral",
-    "levantamento terra",
-  ])
+  const [exercisesList, setExercisesList] = useState<ExerciseDTO[]>([])
   const [groupSelected, setGroupSelected] = useState("Costas")
   const toast = useToast()
 
@@ -53,9 +50,36 @@ export function Home() {
     }
   }
 
+  async function fetchExercisesByGroup() {
+    try {
+      const response = await api.get(`/exercises/bygroup/${groupSelected}`)
+      setExercisesList(response.data)
+
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const errorTitle = isAppError ? error.message : 'Não foi possivel carregar os exercicios.'
+
+      toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <ToastMessage 
+            id={id}
+            title={errorTitle}
+            action="error"
+            onClose={() => toast.close(id)}
+          />
+        )
+      })
+    }
+  }
+
   useEffect(() => {
     fetchGroups()
   }, [])
+
+  useFocusEffect(useCallback(() => {
+   fetchExercisesByGroup() 
+  }, [groupSelected]))
 
   return(
     <VStack flex={1}>
@@ -94,8 +118,13 @@ export function Home() {
         
         <FlatList 
           data={exercisesList}
-          keyExtractor={item => item}
-          renderItem={() => <ExerciseCard onPress={handleOpenExerciseInfo}/>}
+          keyExtractor={item => item.id}
+          renderItem={({ item }) => (
+          <ExerciseCard 
+            data={item} 
+            onPress={handleOpenExerciseInfo} 
+          />
+        )}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 20 }}
         />

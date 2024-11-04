@@ -1,18 +1,23 @@
 import { TouchableOpacity, TouchableOpacityProps } from "react-native";
 
-import { Heading, HStack, Image, VStack, Text, Icon } from "@gluestack-ui/themed";
+import { HStack, Image, VStack, Text, Icon } from "@gluestack-ui/themed";
+
+import { api } from "@services/api";
 
 import { ChevronRight } from "lucide-react-native"
+import { ExerciseDTO } from "@dtos/ExerciseDTO";
 
-type ExerciseCardProps = TouchableOpacityProps
+type ExerciseCardProps = TouchableOpacityProps & {
+  data: ExerciseDTO
+}
 
-export function ExerciseCard({ ...rest }: ExerciseCardProps) {
+export function ExerciseCard({ data, ...rest }: ExerciseCardProps) {
   return(
     <TouchableOpacity {...rest}>
       <HStack bg="$gray500" alignItems="center" p="$2" pr="$4" rounded="$md" mb="$3">
         <Image 
           source={{
-            uri: "https://i.pinimg.com/236x/26/a4/31/26a4312ea5c9d9ca5415cef6670f88f0.jpg"
+            uri: `${api.defaults.baseURL}/exercise/thumb/${data.thumb}`
           }} 
           alt="exercise example picture"
           w="$16"
@@ -24,11 +29,11 @@ export function ExerciseCard({ ...rest }: ExerciseCardProps) {
 
         <VStack flex={1}>
           <Text fontSize="$lg" color="white" fontFamily="$heading">
-            Puxada frontal
+            {data.name}
           </Text>
 
           <Text fontSize="$sm" color="$gray200" mt="$1" numberOfLines={2}>
-            3 séries x 12 repetições
+            {data.series} séries x {data.repetitions} repetições
           </Text>
         </VStack>
 
