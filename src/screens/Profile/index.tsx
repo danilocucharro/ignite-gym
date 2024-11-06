@@ -16,6 +16,8 @@ import { Input } from "@components/Input";
 import { Button } from "@components/Button";
 import { ToastMessage } from "@components/ToastMessage";
 
+import defaultAvatarImg from "@assets/userPhotoDefault.png"
+
 import { api } from "@services/api";
 import { useAuth } from "@hooks/UseAuth";
 import { AppError } from "@utils/AppError";
@@ -52,7 +54,6 @@ const profileSchema = yup.object({
 
 export function Profile() {
   const [isUpdatingUserProfile, setIsUpdatingUserProfile] = useState(false)
-  const [userPhoto, setUserPhoto] = useState("https://github.com/danilocucharro.png")
 
   const { user, updateUserProfile } = useAuth()
   const toast = useToast()
@@ -103,10 +104,44 @@ export function Profile() {
           })          
         }
   
-        setUserPhoto(photoUri)
+        // pegando a extensao da imagem
+        const fileExtension = selectedPhoto.assets[0].uri.split('.').pop(); 
+
+        const photoContent = {
+          name: `${user.name}.${fileExtension}`.toLowerCase(),
+          uri: selectedPhoto.assets[0].uri,
+          type: `${selectedPhoto.assets[0].type}/${fileExtension}`
+        } as any
+
+        const userPhotoUploadForm = new FormData();
+        userPhotoUploadForm.append('avatar', photoContent);
+
+        const avatarUpdatedResponse = await api.patch('/users/avatar', userPhotoUploadForm, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+
+        const userUpdated = user;
+        userUpdated.avatar = avatarUpdatedResponse.data.avatar
+
+        updateUserProfile(userUpdated)
+
+        toast.show({
+          placement: "top",
+          render: ({ id }) => (
+            <ToastMessage 
+              id={id}
+              title="Sucesso!"
+              description="A foto do seu perfil foi atualizada."
+              action="success"
+              onClose={() => toast.close(id)}
+            />
+          )
+        })
       }
     } catch(error) {
-
+      console.log(error)
     }
   }
 
@@ -163,7 +198,10 @@ export function Profile() {
       <ScrollView contentContainerStyle={{ paddingBottom: 36 }}>
         <Center mt="$6" px="$10">
           <UserPhoto 
-            source={{ uri: userPhoto }} 
+            source={ 
+              user.avatar
+              ? { uri: `${api.defaults.baseURL}/avatar/${user.avatar}` } 
+              : defaultAvatarImg}
             alt="user photo"
             size="xl"
           />
