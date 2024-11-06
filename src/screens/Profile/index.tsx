@@ -24,7 +24,7 @@ type FormDataProps = {
   name: string;
   email: string;
   password?: string | null | undefined;
-  old_password?: string | undefined;
+  old_password?: string;
   confirm_password?: string | null | undefined;
 }
 
@@ -54,7 +54,7 @@ export function Profile() {
   const [isUpdatingUserProfile, setIsUpdatingUserProfile] = useState(false)
   const [userPhoto, setUserPhoto] = useState("https://github.com/danilocucharro.png")
 
-  const { user } = useAuth()
+  const { user, updateUserProfile } = useAuth()
   const toast = useToast()
   const { 
     control,
@@ -115,6 +115,11 @@ export function Profile() {
       setIsUpdatingUserProfile(true)
 
       await api.put('/users', data)
+
+      const userUpdated = user
+      userUpdated.name = data.name
+
+      await updateUserProfile(userUpdated)
 
       toast.show({
         placement: "top",
@@ -217,7 +222,7 @@ export function Profile() {
                   placeholder="Senha antiga" 
                   bg="$gray600" 
                   secureTextEntry 
-                  onChange={onChange}
+                  onChangeText={onChange}
                 />
               )}
             />
