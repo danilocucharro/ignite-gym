@@ -24,12 +24,12 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [user, setUser] = useState<UserDTO>({} as UserDTO)
   const [isLoadingStoragedUserData, setIsLoadingStoragedUserData] = useState(true);
 
-  async function storageUserAndTokenSave(userData: UserDTO, token: string) {
+  async function storageUserAndTokenSave(userData: UserDTO, token: string, refresh_token: string) {
     try {
       setIsLoadingStoragedUserData(true)
 
       await storageSaveUser(userData)
-      await storageSaveAuthToken(token)
+      await storageSaveAuthToken({ token, refresh_token })
 
     } catch (error) {
       throw error
@@ -48,8 +48,8 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     try {
       const { data } = await api.post('/sessions', { email, password });
 
-      if(data.user && data.token){
-        await storageUserAndTokenSave(data.user, data.token)
+      if(data.user && data.token && data.refresh_token){
+        await storageUserAndTokenSave(data.user, data.token, data.refresh_token)
         storageUserAndTokenUpdate(data.user, data.token)
       }
     } catch (error) {
@@ -88,7 +88,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       setIsLoadingStoragedUserData(true)
 
       const userLogged = await storageGetUser(); // resgatando usuario salvo no AsyncStorage
-      const token = await storageGetAuthToken(); // resgatando o token salvo no AsyncStorage
+      const { token } = await storageGetAuthToken(); // resgatando o token salvo no AsyncStorage
 
       if(token && userLogged) {
         storageUserAndTokenUpdate(userLogged, token)
@@ -100,9 +100,17 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     }
   }
   
-  useEffect(()  =>{
+  useEffect(() =>{
     loadUserData()
   }, [])
+
+  useEffect(() => {
+    const subscribe = api.registerInterceptTokenManager(signOut);
+
+    return () => {
+      subscribe()
+    }
+  }, [signOut])
 
   return(
     <AuthContext.Provider value={{ 

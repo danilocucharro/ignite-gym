@@ -7,6 +7,7 @@ import { VStack, Text, useToast } from "@gluestack-ui/themed";
 import { ScreenHeader } from "../../components/ScreenHeader";
 import { ToastMessage } from "@components/ToastMessage";
 import { ExerciseHistoryCard } from "./components/ExerciseHistoryCard";
+import { Loading } from "@components/Loading";
 
 import { SectionHistoryDTO } from "@dtos/SectionHistoryDTO";
 
@@ -53,26 +54,30 @@ export function History() {
     <VStack flex={1}>
       <ScreenHeader title="Histórico" />
 
-      <SectionList 
-        sections={exercises}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => <ExerciseHistoryCard data={item} />}
-        renderSectionHeader={({ section }) => (
-          <Text color="$gray200" fontSize="$md" mt="$10" mb="$3" fontFamily="$heading">
-            {section.title}
-          </Text>
-        )}
-        style={{ paddingHorizontal: 32 }}
-        contentContainerStyle={
-          exercises.length === 0 && { flex: 1, justifyContent: "center" }
-        }
-        ListEmptyComponent={() => (
-          <Text color="$gray100" textAlign="center">
-            Nao ha exercicios registrados ainda. {"\n"}Vamos treinar hoje?
-          </Text>
-        )}
-        showsVerticalScrollIndicator={false}
-      />
+      {
+        isLoading ? (<Loading />) : (
+          <SectionList 
+            sections={exercises}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => <ExerciseHistoryCard data={item} />}
+            renderSectionHeader={({ section }) => (
+              <Text color="$gray200" fontSize="$md" mt="$10" mb="$3" fontFamily="$heading">
+                {section.title}
+              </Text> 
+            )}
+            style={{ paddingHorizontal: 32 }}
+            contentContainerStyle={
+              exercises.length === 0 && { flex: 1, justifyContent: "center" }
+            }
+            ListEmptyComponent={() => (
+              <Text color="$gray100" textAlign="center">
+                Nao ha exercicios registrados ainda. {"\n"}Vamos treinar hoje?
+              </Text>
+            )}
+            showsVerticalScrollIndicator={false}
+          />
+        )
+      }
     </VStack>
   )
 }
